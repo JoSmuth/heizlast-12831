@@ -15,7 +15,7 @@ import sys
 HERE = Path(__file__).resolve()
 SRC_DIR = HERE.parent.parent
 PROJECT_ROOT = SRC_DIR.parent
-TEMPLATES_DIR = SRC_DIR / "heizlast" / "web" / "templates"
+TEMPLATES_DIR = Path(__file__).resolve().parent / "templates"
 STATIC_DIR = PROJECT_ROOT / "static"
 
 # Pfad für Imports
