@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Heizlast-Rechentool</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🏠 Heizlast-Rechentool</h1>
+            <p class="subtitle">DIN EN 12831-1 Berechnung</p>
+        </header>
+
+        <main>
+            <!-- Gebäude-Eingabe -->
+            <section class="card">
+                <h2>Gebäudedaten</h2>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="building-name">Gebäudename</label>
+                        <input type="text" id="building-name" value="Mein Gebäude" placeholder="Gebäudename">
+                    </div>
+                    <div class="form-group">
+                        <label for="building-plz">Postleitzahl</label>
+                        <input type="text" id="building-plz" placeholder="z.B. 10115" maxlength="5" required>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Räume -->
+            <section class="card">
+                <div class="section-header">
+                    <h2>Räume</h2>
+                    <button type="button" id="add-room-btn" class="btn btn-primary">+ Raum hinzufügen</button>
+                </div>
+                <div id="rooms-container">
+                    <!-- Räume werden dynamisch hinzugefügt -->
+                </div>
+            </section>
+
+            <!-- Berechnen Button -->
+            <div class="calculate-section">
+                <button type="button" id="calculate-btn" class="btn btn-calculate">Berechnen</button>
+            </div>
+
+            <!-- Ergebnisse -->
+            <section id="results-section" class="card" style="display: none;">
+                <h2>Ergebnisse</h2>
+                <div id="climate-info" class="climate-info"></div>
+                <div id="results-table-container">
+                    <table id="results-table">
+                        <thead>
+                            <tr>
+                                <th>Raum</th>
+                                <th>Fläche (m²)</th>
+                                <th>Volumen (m³)</th>
+                                <th>Φ<sub>T</sub> (W)</th>
+                                <th>Φ<sub>V</sub> (W)</th>
+                                <th>Φ<sub>ges</sub> (W)</th>
+                            </tr>
+                        </thead>
+                        <tbody id="results-body">
+                        </tbody>
+                        <tfoot id="results-footer">
+                        </tfoot>
+                    </table>
+                </div>
+            </section>
+
+            <!-- Fehler-Anzeige -->
+            <div id="error-message" class="error-message" style="display: none;"></div>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let roomCounter = 0;
+        let elementCounter = 0;
+
+        // DOM Elements
+        const roomsContainer = document.getElementById('rooms-container');
+        const addRoomBtn = document.getElementById('add-room-btn');
+        const calculateBtn = document.getElementById('calculate-btn');
+        const resultsSection = document.getElementById('results-section');
+        const errorMessage = document.getElementById('error-message');
+
+        // Templates
+        function createRoomTemplate(roomId) {
+            return `
+                <div class="room-card" id="room-${roomId}">
+                    <div class="room-header">
+                        <h3>Raum ${roomId}</h3>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRoom(${roomId})">Entfernen</button>
+                    </div>
+                    <div class="room-form">
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Raumname</label>
+                                <input type="text" class="room-name" placeholder="z.B. Wohnzimmer">
+                            </div>
+                            <div class="form-group">
+                                <label>Fläche (m²)</label>
+                                <input type="number" class="room-area" step="0.1" min="0" placeholder="20">
+                            </div>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <label>Raumhöhe (m)</label>
+                                <input type="number" class="room-height" step="0.1" min="0" value="2.5" placeholder="2.5">
+                            </div>
+                            <div class="form-group">
+                                <label>Innentemperatur (°C)</label>
+                                <input type="number" class="room-temp" step="0.5" min="15" max="30" value="20" placeholder="20">
+                            </div>
+                        </div>
+                        
+                        <div class="elements-section">
+                            <div class="section-header">
+                                <h4>Bauteile</h4>
+                                <button type="button" class="btn btn-secondary btn-sm" onclick="addElement(${roomId})">+ Bauteil</button>
+                            </div>
+                            <div class="elements-container" id="elements-${roomId}">
+                                <!-- Bauteile werden dynamisch hinzugefügt -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function createElementTemplate(elementId) {
+            return `
+                <div class="element-card" id="element-${elementId}">
+                    <div class="form-row element-form">
+                        <div class="form-group">
+                            <label>Bauteilname</label>
+                            <input type="text" class="element-name" placeholder="z.B. Außenwand Nord">
+                        </div>
+                        <div class="form-group">
+                            <label>Typ</label>
+                            <select class="element-type">
+                                <option value="wall">Wand</option>
+                                <option value="window">Fenster</option>
+                                <option value="floor">Boden</option>
+                                <option value="ceiling">Decke</option>
+                                <option value="roof">Dach</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Fläche (m²)</label>
+                            <input type="number" class="element-area" step="0.1" min="0" placeholder="10">
+                        </div>
+                        <div class="form-group">
+                            <label>U-Wert (W/m²K)</label>
+                            <input type="number" class="element-u-value" step="0.01" min="0" placeholder="0.24">
+                        </div>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeElement(${elementId})">×</button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Functions
+        function addRoom() {
+            roomCounter++;
+            roomsContainer.insertAdjacentHTML('beforeend', createRoomTemplate(roomCounter));
+        }
+
+        function removeRoom(roomId) {
+            const room = document.getElementById(`room-${roomId}`);
+            if (room) {
+                room.remove();
+            }
+        }
+
+        function addElement(roomId) {
+            elementCounter++;
+            const container = document.getElementById(`elements-${roomId}`);
+            container.insertAdjacentHTML('beforeend', createElementTemplate(elementCounter));
+        }
+
+        function removeElement(elementId) {
+            const element = document.getElementById(`element-${elementId}`);
+            if (element) {
+                element.remove();
+            }
+        }
+
+        function collectData() {
+            const plz = document.getElementById('building-plz').value;
+            const name = document.getElementById('building-name').value || 'Mein Gebäude';
+
+            if (!plz || plz.length !== 5) {
+                throw new Error('Bitte geben Sie eine gültige 5-stellige Postleitzahl ein.');
+            }
+
+            const rooms = [];
+            const roomCards = document.querySelectorAll('.room-card');
+
+            roomCards.forEach(roomCard => {
+                const roomName = roomCard.querySelector('.room-name').value || `Raum ${rooms.length + 1}`;
+                const area = parseFloat(roomCard.querySelector('.room-area').value) || 0;
+                const height = parseFloat(roomCard.querySelector('.room-height').value) || 2.5;
+                const temp = parseFloat(roomCard.querySelector('.room-temp').value) || 20;
+
+                if (area <= 0) {
+                    throw new Error(`Raum "${roomName}" hat keine gültige Fläche.`);
+                }
+
+                const elements = [];
+                const elementCards = roomCard.querySelectorAll('.element-card');
+
+                elementCards.forEach(elementCard => {
+                    const elemName = elementCard.querySelector('.element-name').value || 'Bauteil';
+                    const elemType = elementCard.querySelector('.element-type').value;
+                    const elemArea = parseFloat(elementCard.querySelector('.element-area').value) || 0;
+                    const elemUValue = parseFloat(elementCard.querySelector('.element-u-value').value) || 0;
+
+                    if (elemArea > 0 && elemUValue > 0) {
+                        elements.push({
+                            name: elemName,
+                            type: elemType,
+                            area: elemArea,
+                            u_value: elemUValue,
+                            orientation: null,
+                            is_ground_contact: elemType === 'floor',
+                            perimeter: null
+                        });
+                    }
+                });
+
+                rooms.push({
+                    name: roomName,
+                    theta_int: temp,
+                    area: area,
+                    height: height,
+                    elements: elements
+                });
+            });
+
+            if (rooms.length === 0) {
+                throw new Error('Bitte fügen Sie mindestens einen Raum hinzu.');
+            }
+
+            return {
+                plz: plz,
+                name: name,
+                rooms: rooms,
+                effective_heat_capacity: 10000
+            };
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.style.display = 'block';
+            resultsSection.style.display = 'none';
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        async function calculate() {
+            hideError();
+
+            try {
+                const data = collectData();
+                
+                calculateBtn.disabled = true;
+                calculateBtn.textContent = 'Berechne...';
+
+                const response = await fetch('/api/calculate', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(data)
+                });
+
+                const result = await response.json();
+
+                if (result.error) {
+                    throw new Error(result.error);
+                }
+
+                displayResults(result);
+
+            } catch (error) {
+                showError(error.message);
+            } finally {
+                calculateBtn.disabled = false;
+                calculateBtn.textContent = 'Berechnen';
+            }
+        }
+
+        function displayResults(result) {
+            // Climate info
+            const climateInfo = document.getElementById('climate-info');
+            climateInfo.innerHTML = `
+                <div class="climate-grid">
+                    <div><strong>PLZ:</strong> ${result.climate.plz}</div>
+                    <div><strong>θ<sub>e</sub>:</strong> ${result.climate.theta_e} °C</div>
+                    <div><strong>θ<sub>e,korr</sub>:</strong> ${result.climate.theta_e_corrected} °C</div>
+                    <div><strong>Zeitkonstante τ:</strong> ${result.building.tau} h</div>
+                </div>
+            `;
+
+            // Results table
+            const tbody = document.getElementById('results-body');
+            tbody.innerHTML = '';
+
+            result.rooms.forEach(room => {
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${room.name}</td>
+                    <td>${room.area}</td>
+                    <td>${room.volume}</td>
+                    <td>${room.phi_t}</td>
+                    <td>${room.phi_v}</td>
+                    <td><strong>${room.phi_total}</strong></td>
+                `;
+                tbody.appendChild(row);
+            });
+
+            // Footer / Totals
+            const tfoot = document.getElementById('results-footer');
+            tfoot.innerHTML = `
+                <tr class="totals-row">
+                    <td colspan="3"><strong>Gesamt</strong></td>
+                    <td><strong>H<sub>T</sub>: ${result.totals.h_t} W/K</strong></td>
+                    <td><strong>H<sub>V</sub>: ${result.totals.h_v} W/K</strong></td>
+                    <td><strong>${result.totals.phi_total} W</strong></td>
+                </tr>
+            `;
+
+            resultsSection.style.display = 'block';
+        }
+
+        // Event Listeners
+        addRoomBtn.addEventListener('click', addRoom);
+        calculateBtn.addEventListener('click', calculate);
+
+        // Add initial room
+        addRoom();
+    </script>
+</body>
+</html>
