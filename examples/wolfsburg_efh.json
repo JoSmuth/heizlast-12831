@@ -1,0 +1,657 @@
+{
+  "building": {
+    "name": "EFH Wolfsburg (Anhang B)",
+    "number": "1",
+    "gross_volume": 760.9,
+    "building_area": 135.0,
+    "num_floors": 2,
+    "heat_bridge_category": "A",
+    "delta_u_tb": 0.05,
+    "plz": "38440",
+    "altitude_build": 96,
+    "climate_data": {
+      "city": "Wolfsburg",
+      "theta_e_ref": -11.7,
+      "theta_e_mean": 9.6,
+      "altitude_ref": 80,
+      "altitude_correction": 0.0
+    },
+    "effective_heat_capacity": 31835
+  },
+  "zones": [
+    {
+      "name": "Hauptzone",
+      "number": "1",
+      "air_tightness_category": "A",
+      "q_env_50": 2.0,
+      "has_ventilation_system": false,
+      "eta_rec": 0.0,
+      "f_qv_z": 0.05,
+      "num_facades": 1,
+      "f_dir": 1.0,
+      "envelope_area": 416.0,
+      "rooms": [
+        {
+          "name": "EG - Wohnzimmer",
+          "room_type": "wohnzimmer",
+          "theta_int": 20.0,
+          "length": 6.0,
+          "width": 5.0,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Nord",
+              "element_type": "wand",
+              "area": 27.5,
+              "u_value": 0.34,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Außenwand Ost",
+              "element_type": "wand",
+              "area": 12.5,
+              "u_value": 0.33,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Nord",
+              "element_type": "fenster",
+              "area": 6.0,
+              "u_value": 1.4,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Fenster Ost",
+              "element_type": "fenster",
+              "area": 3.0,
+              "u_value": 1.4,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Decke oben (EG)",
+              "element_type": "decke",
+              "area": 30.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 30.0,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 11.0,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 75.0
+        },
+        {
+          "name": "EG - Küche",
+          "room_type": "kueche",
+          "theta_int": 20.0,
+          "length": 5.0,
+          "width": 4.0,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Süd",
+              "element_type": "wand",
+              "area": 25.0,
+              "u_value": 0.34,
+              "orientation": 180,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Süd",
+              "element_type": "fenster",
+              "area": 4.0,
+              "u_value": 1.4,
+              "orientation": 180,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Decke oben (EG)",
+              "element_type": "decke",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 20.0,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 9.0,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 50.0
+        },
+        {
+          "name": "EG - Flur",
+          "room_type": "flur",
+          "theta_int": 20.0,
+          "length": 8.0,
+          "width": 2.5,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand West",
+              "element_type": "wand",
+              "area": 15.0,
+              "u_value": 0.34,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster West",
+              "element_type": "fenster",
+              "area": 2.0,
+              "u_value": 1.4,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Decke oben (EG)",
+              "element_type": "decke",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 20.0,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 10.5,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 50.0
+        },
+        {
+          "name": "EG - WC",
+          "room_type": "wc",
+          "theta_int": 20.0,
+          "length": 3.0,
+          "width": 2.5,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Nord",
+              "element_type": "wand",
+              "area": 7.5,
+              "u_value": 0.34,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Nord",
+              "element_type": "fenster",
+              "area": 1.0,
+              "u_value": 1.4,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Decke oben (EG)",
+              "element_type": "decke",
+              "area": 7.5,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 7.5,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 5.5,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 18.75
+        },
+        {
+          "name": "OG - Schlafzimmer",
+          "room_type": "schlafzimmer",
+          "theta_int": 20.0,
+          "length": 6.0,
+          "width": 5.0,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Nord",
+              "element_type": "wand",
+              "area": 27.5,
+              "u_value": 0.34,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Außenwand West",
+              "element_type": "wand",
+              "area": 12.5,
+              "u_value": 0.33,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Nord",
+              "element_type": "fenster",
+              "area": 5.0,
+              "u_value": 1.4,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Fenster West",
+              "element_type": "fenster",
+              "area": 2.5,
+              "u_value": 1.4,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Dach (OG)",
+              "element_type": "dach",
+              "area": 30.0,
+              "u_value": 0.18,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Decke unten (EG-Decke)",
+              "element_type": "decke",
+              "area": 30.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 75.0
+        },
+        {
+          "name": "OG - Kinderzimmer",
+          "room_type": "kinderzimmer",
+          "theta_int": 20.0,
+          "length": 5.0,
+          "width": 4.0,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Süd",
+              "element_type": "wand",
+              "area": 20.0,
+              "u_value": 0.34,
+              "orientation": 180,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Außenwand Ost",
+              "element_type": "wand",
+              "area": 10.0,
+              "u_value": 0.33,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Süd",
+              "element_type": "fenster",
+              "area": 4.0,
+              "u_value": 1.4,
+              "orientation": 180,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Fenster Ost",
+              "element_type": "fenster",
+              "area": 2.0,
+              "u_value": 1.4,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Dach (OG)",
+              "element_type": "dach",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": 180,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Decke unten (EG-Decke)",
+              "element_type": "decke",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 50.0
+        },
+        {
+          "name": "OG - Bad",
+          "room_type": "bad",
+          "theta_int": 24.0,
+          "length": 4.0,
+          "width": 3.0,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Außenwand Ost",
+              "element_type": "wand",
+              "area": 15.0,
+              "u_value": 0.34,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Ost",
+              "element_type": "fenster",
+              "area": 1.5,
+              "u_value": 1.4,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Dach (OG)",
+              "element_type": "dach",
+              "area": 12.0,
+              "u_value": 0.18,
+              "orientation": 90,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Decke unten (EG-Decke)",
+              "element_type": "decke",
+              "area": 12.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 30.0
+        },
+        {
+          "name": "OG - Flur",
+          "room_type": "flur",
+          "theta_int": 20.0,
+          "length": 8.0,
+          "width": 2.5,
+          "height": 2.5,
+          "elements": [
+            {
+              "name": "Dach (OG)",
+              "element_type": "dach",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Decke unten (EG-Decke)",
+              "element_type": "decke",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 50.0
+        },
+        {
+          "name": "Keller - Heizungsraum",
+          "room_type": "heizungsraum",
+          "theta_int": 15.0,
+          "length": 5.0,
+          "width": 4.0,
+          "height": 2.3,
+          "elements": [
+            {
+              "name": "Außenwand Nord (Keller)",
+              "element_type": "wand",
+              "area": 23.0,
+              "u_value": 0.34,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Kellerwand gegen Erdreich",
+              "element_type": "wand",
+              "area": 11.5,
+              "u_value": 0.34,
+              "orientation": null,
+              "temperature_factor": 0.5,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster Nord (Keller)",
+              "element_type": "fenster",
+              "area": 1.0,
+              "u_value": 1.4,
+              "orientation": 0,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 20.0,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 9.0,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            },
+            {
+              "name": "Decke oben (Kellerdecke)",
+              "element_type": "decke",
+              "area": 20.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 46.0
+        },
+        {
+          "name": "Keller - Abstellraum",
+          "room_type": "abstellraum",
+          "theta_int": 15.0,
+          "length": 4.0,
+          "width": 3.5,
+          "height": 2.3,
+          "elements": [
+            {
+              "name": "Außenwand West (Keller)",
+              "element_type": "wand",
+              "area": 16.1,
+              "u_value": 0.34,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Kellerwand gegen Erdreich",
+              "element_type": "wand",
+              "area": 9.2,
+              "u_value": 0.34,
+              "orientation": null,
+              "temperature_factor": 0.5,
+              "delta_u_tb": 0.05
+            },
+            {
+              "name": "Fenster West (Keller)",
+              "element_type": "fenster",
+              "area": 0.5,
+              "u_value": 1.4,
+              "orientation": 270,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.0
+            },
+            {
+              "name": "Bodenplatte gegen Erdreich",
+              "element_type": "bodenplatte",
+              "area": 14.0,
+              "u_value": 0.58,
+              "orientation": null,
+              "temperature_factor": 0.32,
+              "perimeter": 7.5,
+              "depth": 0.0,
+              "delta_u_tb": 0.05,
+              "u_equiv": 0.36
+            },
+            {
+              "name": "Decke oben (Kellerdecke)",
+              "element_type": "decke",
+              "area": 14.0,
+              "u_value": 0.18,
+              "orientation": null,
+              "temperature_factor": 1.0,
+              "delta_u_tb": 0.05
+            }
+          ],
+          "q_v_sup": 0.0,
+          "q_v_exh": 0.0,
+          "q_v_transfer": 0.0,
+          "q_v_techn": 0.0,
+          "heating_up_enabled": true,
+          "t_hu": 2.0,
+          "n_sb": 0.1,
+          "volume": 32.2
+        }
+      ]
+    }
+  ],
+  "expected_results": {
+    "building": {
+      "h_t": 210,
+      "h_v_at_n05": 99,
+      "time_constant": 103,
+      "theta_e_corrected": -10.9
+    }
+  }
+}
