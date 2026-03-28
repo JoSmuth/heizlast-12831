@@ -3,36 +3,562 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Heizlast-Rechentool</title>
-    <link rel="stylesheet" href="/static/style.css">
+    <title>Heizlast-Rechentool - DIN EN 12831-1</title>
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --bg-card: #1c2128;
+            --border-color: #30363d;
+            --text-primary: #e6edf3;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --accent-primary: #58a6ff;
+            --accent-secondary: #238636;
+            --accent-warning: #d29922;
+            --accent-danger: #f85149;
+            --accent-purple: #a371f7;
+            --accent-orange: #f0883e;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Noto Sans', Helvetica, Arial, sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 2rem;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border-radius: 12px;
+            border: 1px solid var(--border-color);
+        }
+
+        header h1 {
+            font-size: 2.5rem;
+            color: var(--accent-primary);
+            margin-bottom: 0.5rem;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+
+        .norm-badge {
+            display: inline-block;
+            background: var(--accent-purple);
+            color: white;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        /* Cards */
+        .card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .card-header h2 {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-header h3, .section-header h4 {
+            color: var(--text-primary);
+        }
+
+        /* Form Elements */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+        }
+
+        .form-group input,
+        .form-group select {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-size: 1rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--accent-primary);
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.2);
+        }
+
+        .form-group input::placeholder {
+            color: var(--text-muted);
+        }
+
+        .form-group .unit {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-left: 0.5rem;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .form-row .form-group {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .auto-value {
+            background: var(--bg-secondary);
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            color: var(--accent-secondary);
+            font-weight: 600;
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
+            background: var(--accent-primary);
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #4393e6;
+        }
+
+        .btn-secondary {
+            background: var(--bg-tertiary);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: var(--border-color);
+        }
+
+        .btn-success {
+            background: var(--accent-secondary);
+            color: white;
+        }
+
+        .btn-success:hover {
+            background: #2ea043;
+        }
+
+        .btn-danger {
+            background: var(--accent-danger);
+            color: white;
+        }
+
+        .btn-danger:hover {
+            background: #da3633;
+        }
+
+        .btn-sm {
+            padding: 0.5rem 1rem;
+            font-size: 0.9rem;
+        }
+
+        .btn-calculate {
+            width: 100%;
+            padding: 1.25rem;
+            font-size: 1.2rem;
+            background: linear-gradient(135deg, var(--accent-secondary), #2ea043);
+        }
+
+        .calculate-section {
+            margin: 2rem 0;
+        }
+
+        /* Room Cards */
+        .room-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            margin-bottom: 1.5rem;
+            overflow: hidden;
+        }
+
+        .room-header {
+            background: var(--bg-tertiary);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .room-header h3 {
+            color: var(--accent-orange);
+        }
+
+        .room-body {
+            padding: 1.5rem;
+        }
+
+        /* Element Cards */
+        .element-card {
+            background: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .element-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .element-header h5 {
+            color: var(--text-secondary);
+        }
+
+        .element-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 0.75rem;
+        }
+
+        .element-grid .form-group {
+            margin-bottom: 0;
+        }
+
+        /* Ventilation Section */
+        .ventilation-section {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-top: 1rem;
+        }
+
+        .ventilation-section h4 {
+            color: var(--accent-purple);
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-bottom: 1rem;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 1.25rem;
+            height: 1.25rem;
+            accent-color: var(--accent-primary);
+        }
+
+        .checkbox-group label {
+            color: var(--text-primary);
+            font-weight: 500;
+        }
+
+        /* Results */
+        .results-section {
+            display: none;
+        }
+
+        .results-section.active {
+            display: block;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .result-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .result-card .label {
+            color: var(--text-secondary);
+            font-size: 0.85rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .result-card .value {
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            font-weight: 700;
+        }
+
+        .result-card .unit {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        th {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+            font-weight: 600;
+            text-transform: uppercase;
+            font-size: 0.85rem;
+        }
+
+        td {
+            color: var(--text-primary);
+        }
+
+        tr:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .totals-row {
+            background: var(--bg-tertiary);
+            font-weight: 700;
+        }
+
+        .totals-row td {
+            color: var(--accent-primary);
+        }
+
+        /* Error */
+        .error-message {
+            background: rgba(248, 81, 73, 0.15);
+            border: 1px solid var(--accent-danger);
+            border-radius: 8px;
+            padding: 1rem;
+            color: var(--accent-danger);
+            margin-bottom: 1rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            header h1 {
+                font-size: 1.75rem;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .element-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Collapsible */
+        .collapsible-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .collapsible-content.open {
+            max-height: 2000px;
+        }
+
+        .toggle-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+        }
+
+        /* Sub-option visibility */
+        .sub-options {
+            display: none;
+            margin-top: 0.75rem;
+            padding-top: 0.75rem;
+            border-top: 1px dashed var(--border-color);
+        }
+
+        .sub-options.visible {
+            display: block;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
         <header>
             <h1>🏠 Heizlast-Rechentool</h1>
-            <p class="subtitle">DIN EN 12831-1 Berechnung</p>
+            <p class="subtitle">Normgerechte Berechnung nach</p>
+            <span class="norm-badge">DIN EN 12831-1</span>
         </header>
 
         <main>
-            <!-- Gebäude-Eingabe -->
+            <!-- ==================== GEBÄUDE-SEKTION ==================== -->
             <section class="card">
-                <h2>Gebäudedaten</h2>
-                <div class="form-row">
+                <div class="card-header">
+                    <h2>🏢 Gebäudedaten</h2>
+                </div>
+                <div class="form-grid">
                     <div class="form-group">
-                        <label for="building-name">Gebäudename</label>
-                        <input type="text" id="building-name" value="Mein Gebäude" placeholder="Gebäudename">
+                        <label for="building-name">Gebäude-Name</label>
+                        <input type="text" id="building-name" value="Mein Gebäude" placeholder="z.B. Einfamilienhaus Müller">
                     </div>
                     <div class="form-group">
                         <label for="building-plz">Postleitzahl</label>
                         <input type="text" id="building-plz" placeholder="z.B. 10115" maxlength="5" required>
                     </div>
+                    <div class="form-group">
+                        <label for="building-vol">Bruttovolumen V<sub>e</sub></label>
+                        <input type="number" id="building-vol" step="0.1" min="0" placeholder="z.B. 450">
+                        <span class="unit">m³</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="building-area">Grundfläche A<sub>build</sub></label>
+                        <input type="number" id="building-area" step="0.1" min="0" placeholder="z.B. 150">
+                        <span class="unit">m²</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="building-env-area">Hüllfläche A<sub>env</sub></label>
+                        <input type="number" id="building-env-area" step="0.1" min="0" placeholder="z.B. 320">
+                        <span class="unit">m²</span>
+                    </div>
+                    <div class="form-group">
+                        <label for="thermal-bridge">Wärmebrückenzuschlag</label>
+                        <select id="thermal-bridge">
+                            <option value="0.05">A - Ausführung mit geringen Wärmebrücken (ΔU<sub>TB</sub> = 0,05 W/(m²K))</option>
+                            <option value="0.10" selected>B - Normale Ausführung (ΔU<sub>TB</sub> = 0,10 W/(m²K))</option>
+                            <option value="0.15">C - Ausführung mit erhöhten Wärmebrücken (ΔU<sub>TB</sub> = 0,15 W/(m²K))</option>
+                            <option value="0.20">D - Unbekannte Ausführung (ΔU<sub>TB</sub> = 0,20 W/(m²K))</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="air-tightness">Luftdichtheitskategorie</label>
+                        <select id="air-tightness">
+                            <option value="1.0">A - Sehr gut luftdicht (n<sub>50</sub> = 1,0 h⁻¹)</option>
+                            <option value="2.0" selected>B - Gut luftdicht (n<sub>50</sub> = 2,0 h⁻¹)</option>
+                            <option value="3.0">C - Normal luftdicht (n<sub>50</sub> = 3,0 h⁻¹)</option>
+                            <option value="4.0">D - Wenig luftdicht (n<sub>50</sub> = 4,0 h⁻¹)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="facades">Anzahl Fassaden</label>
+                        <select id="facades">
+                            <option value="1">1 Fassade</option>
+                            <option value="2" selected>2 Fassaden</option>
+                            <option value="3">≥3 Fassaden</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="shielding">Abschirmung</label>
+                        <select id="shielding">
+                            <option value="frei">Frei (exponierte Lage)</option>
+                            <option value="mittel" selected>Mittel (normale Bebauung)</option>
+                            <option value="stark">Stark (innenstadtlage)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="heat-storage">Wärmespeicherkategorie</label>
+                        <select id="heat-storage">
+                            <option value="leicht">Leicht (Holzbau, Leichtbauweise)</option>
+                            <option value="mittel" selected>Mittel (Mischbauweise)</option>
+                            <option value="schwer">Schwer (Massivbau, Beton)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="heat-capacity">Eff. Wärmespeicherkapazität C<sub>eff</sub></label>
+                        <input type="number" id="heat-capacity" step="100" min="0" value="10000" placeholder="z.B. 10000">
+                        <span class="unit">Wh/K</span>
+                    </div>
                 </div>
             </section>
 
-            <!-- Räume -->
+            <!-- ==================== RAUM-SEKTION ==================== -->
             <section class="card">
-                <div class="section-header">
-                    <h2>Räume</h2>
+                <div class="card-header">
+                    <h2>🚪 Räume</h2>
                     <button type="button" id="add-room-btn" class="btn btn-primary">+ Raum hinzufügen</button>
                 </div>
                 <div id="rooms-container">
@@ -40,25 +566,78 @@
                 </div>
             </section>
 
-            <!-- Berechnen Button -->
+            <!-- ==================== BERECHNEN ==================== -->
             <div class="calculate-section">
-                <button type="button" id="calculate-btn" class="btn btn-calculate">Berechnen</button>
+                <button type="button" id="calculate-btn" class="btn btn-success btn-calculate">
+                    🔥 Heizlast berechnen
+                </button>
             </div>
 
-            <!-- Ergebnisse -->
-            <section id="results-section" class="card" style="display: none;">
-                <h2>Ergebnisse</h2>
-                <div id="climate-info" class="climate-info"></div>
-                <div id="results-table-container">
-                    <table id="results-table">
+            <!-- ==================== ERGEBNIS-SEKTION ==================== -->
+            <section id="results-section" class="card results-section">
+                <div class="card-header">
+                    <h2>📊 Ergebnisse</h2>
+                </div>
+
+                <!-- Klimadaten -->
+                <div class="section-header">
+                    <h3>🌍 Klimadaten</h3>
+                </div>
+                <div id="climate-results" class="results-grid">
+                    <div class="result-card">
+                        <div class="label">Außentemperatur θ<sub>e</sub></div>
+                        <div class="value" id="result-theta-e">-</div>
+                        <div class="unit">°C</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="label">Korrigierte Temperatur θ<sub>e,korr</sub></div>
+                        <div class="value" id="result-theta-e-corr">-</div>
+                        <div class="unit">°C</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="label">Zeitkonstante τ</div>
+                        <div class="value" id="result-tau">-</div>
+                        <div class="unit">h</div>
+                    </div>
+                </div>
+
+                <!-- Gebäude-Ergebnisse -->
+                <div class="section-header">
+                    <h3>🏢 Gebäude-Kennwerte</h3>
+                </div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <div class="label">Transmissionswärmeverlust H<sub>T</sub></div>
+                        <div class="value" id="result-h-t">-</div>
+                        <div class="unit">W/K</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="label">Lüftungswärmeverlust H<sub>V</sub></div>
+                        <div class="value" id="result-h-v">-</div>
+                        <div class="unit">W/K</div>
+                    </div>
+                    <div class="result-card">
+                        <div class="label">Gesamt-Heizlast</div>
+                        <div class="value" id="result-phi-total">-</div>
+                        <div class="unit">W</div>
+                    </div>
+                </div>
+
+                <!-- Raum-Ergebnisse -->
+                <div class="section-header">
+                    <h3>🚪 Raum-Ergebnisse</h3>
+                </div>
+                <div id="room-results-container">
+                    <table>
                         <thead>
                             <tr>
                                 <th>Raum</th>
                                 <th>Fläche (m²)</th>
                                 <th>Volumen (m³)</th>
+                                <th>θ<sub>int</sub> (°C)</th>
                                 <th>Φ<sub>T</sub> (W)</th>
                                 <th>Φ<sub>V</sub> (W)</th>
-                                <th>Φ<sub>ges</sub> (W)</th>
+                                <th>Φ<sub>HL,total</sub> (W)</th>
                             </tr>
                         </thead>
                         <tbody id="results-body">
@@ -69,103 +648,285 @@
                 </div>
             </section>
 
-            <!-- Fehler-Anzeige -->
+            <!-- Error Message -->
             <div id="error-message" class="error-message" style="display: none;"></div>
         </main>
     </div>
 
     <script>
-        // State
+        // ==================== STATE ====================
         let roomCounter = 0;
         let elementCounter = 0;
+        let ventilationCounter = 0;
 
-        // DOM Elements
+        // Raumart-Temperaturen nach DIN EN 12831-1
+        const ROOM_TEMPS = {
+            'wohnraum': 20,
+            'schlafzimmer': 20,
+            'buero': 20,
+            'kueche': 20,
+            'bad': 24,
+            'dusche': 24,
+            'umkleide': 24,
+            'nebenraum': 15,
+            'treppenhaus': 15,
+            'halle': 15
+        };
+
+        // Baualtersklassen und U-Werte (vereinfacht)
+        const BUILDING_AGE_U_VALUES = {
+            'vor-1970': { 'aussenwand': 1.7, 'fenster': 2.8, 'dach': 1.4, 'bodenplatte': 1.2 },
+            '1970-1980': { 'aussenwand': 1.2, 'fenster': 2.4, 'dach': 0.8, 'bodenplatte': 0.9 },
+            '1980-1995': { 'aussenwand': 0.8, 'fenster': 1.8, 'dach': 0.5, 'bodenplatte': 0.6 },
+            '1995-2002': { 'aussenwand': 0.45, 'fenster': 1.4, 'dach': 0.3, 'bodenplatte': 0.4 },
+            '2002-2016': { 'aussenwand': 0.28, 'fenster': 1.1, 'dach': 0.2, 'bodenplatte': 0.3 },
+            'ab-2016': { 'aussenwand': 0.24, 'fenster': 0.9, 'dach': 0.14, 'bodenplatte': 0.2 }
+        };
+
+        // ==================== DOM ELEMENTS ====================
         const roomsContainer = document.getElementById('rooms-container');
         const addRoomBtn = document.getElementById('add-room-btn');
         const calculateBtn = document.getElementById('calculate-btn');
         const resultsSection = document.getElementById('results-section');
         const errorMessage = document.getElementById('error-message');
 
-        // Templates
+        // ==================== TEMPLATES ====================
         function createRoomTemplate(roomId) {
             return `
                 <div class="room-card" id="room-${roomId}">
                     <div class="room-header">
-                        <h3>Raum ${roomId}</h3>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeRoom(${roomId})">Entfernen</button>
+                        <h3>📍 Raum #${roomId}</h3>
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button type="button" class="toggle-btn" onclick="toggleRoom(${roomId})">▼</button>
+                            <button type="button" class="btn btn-danger btn-sm" onclick="removeRoom(${roomId})">Entfernen</button>
+                        </div>
                     </div>
-                    <div class="room-form">
-                        <div class="form-row">
+                    <div class="room-body collapsible-content open" id="room-body-${roomId}">
+                        <!-- Grunddaten -->
+                        <div class="form-grid">
                             <div class="form-group">
                                 <label>Raumname</label>
                                 <input type="text" class="room-name" placeholder="z.B. Wohnzimmer">
                             </div>
                             <div class="form-group">
-                                <label>Fläche (m²)</label>
-                                <input type="number" class="room-area" step="0.1" min="0" placeholder="20">
+                                <label>Raumart</label>
+                                <select class="room-type" onchange="updateRoomTemp(${roomId})">
+                                    <option value="wohnraum">Wohnraum (20°C)</option>
+                                    <option value="schlafzimmer">Schlafzimmer (20°C)</option>
+                                    <option value="buero">Büro (20°C)</option>
+                                    <option value="kueche">Küche (20°C)</option>
+                                    <option value="bad">Bad (24°C)</option>
+                                    <option value="dusche">Dusche (24°C)</option>
+                                    <option value="umkleide">Umkleide (24°C)</option>
+                                    <option value="nebenraum">Nebenraum (15°C)</option>
+                                    <option value="treppenhaus">Treppenhaus (15°C)</option>
+                                    <option value="halle">Halle (15°C)</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Fläche</label>
+                                <input type="number" class="room-area" step="0.1" min="0" placeholder="20" onchange="updateRoomVolume(${roomId})">
+                                <span class="unit">m²</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Raumhöhe</label>
+                                <input type="number" class="room-height" step="0.1" min="0" value="2.5" placeholder="2.5" onchange="updateRoomVolume(${roomId})">
+                                <span class="unit">m</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Volumen (auto)</label>
+                                <div class="auto-value room-volume">0,0 m³</div>
+                            </div>
+                            <div class="form-group">
+                                <label>Innentemperatur θ<sub>int</sub></label>
+                                <input type="number" class="room-temp" step="0.5" min="10" max="30" value="20">
+                                <span class="unit">°C</span>
+                            </div>
+                            <div class="form-group">
+                                <label style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <input type="checkbox" class="room-comfort">
+                                    Komfortanforderung (+3°C)
+                                </label>
                             </div>
                         </div>
-                        <div class="form-row">
-                            <div class="form-group">
-                                <label>Raumhöhe (m)</label>
-                                <input type="number" class="room-height" step="0.1" min="0" value="2.5" placeholder="2.5">
-                            </div>
-                            <div class="form-group">
-                                <label>Innentemperatur (°C)</label>
-                                <input type="number" class="room-temp" step="0.5" min="15" max="30" value="20" placeholder="20">
-                            </div>
-                        </div>
-                        
-                        <div class="elements-section">
+
+                        <!-- Bauteile -->
+                        <div class="elements-section" style="margin-top: 1.5rem;">
                             <div class="section-header">
-                                <h4>Bauteile</h4>
+                                <h4>🧱 Bauteile</h4>
                                 <button type="button" class="btn btn-secondary btn-sm" onclick="addElement(${roomId})">+ Bauteil</button>
                             </div>
                             <div class="elements-container" id="elements-${roomId}">
                                 <!-- Bauteile werden dynamisch hinzugefügt -->
                             </div>
                         </div>
+
+                        <!-- Lüftung -->
+                        <div class="ventilation-section" style="margin-top: 1.5rem;">
+                            <h4>💨 Lüftung</h4>
+                            <div class="checkbox-group">
+                                <input type="checkbox" class="room-has-ventilation" id="ventilation-${roomId}" onchange="toggleVentilation(${roomId})">
+                                <label for="ventilation-${roomId}">Mit Zu-/Abluftanlage</label>
+                            </div>
+                            <div class="ventilation-options" id="ventilation-options-${roomId}" style="display: none;">
+                                <div class="form-grid" style="margin-top: 1rem;">
+                                    <div class="form-group">
+                                        <label>Zuluftvolumenstrom</label>
+                                        <input type="number" class="room-supply-air" step="1" min="0" placeholder="z.B. 40">
+                                        <span class="unit">m³/h</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Abluftvolumenstrom</label>
+                                        <input type="number" class="room-exhaust-air" step="1" min="0" placeholder="z.B. 40">
+                                        <span class="unit">m³/h</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Überströmvolumenstrom</label>
+                                        <input type="number" class="room-transfer-air" step="1" min="0" placeholder="0">
+                                        <span class="unit">m³/h</span>
+                                    </div>
+                                    <div class="form-group">
+                                        <label>Technikvolumenstrom</label>
+                                        <input type="number" class="room-tech-air" step="1" min="0" placeholder="0">
+                                        <span class="unit">m³/h</span>
+                                    </div>
+                                </div>
+                                <div class="checkbox-group" style="margin-top: 1rem;">
+                                    <input type="checkbox" class="room-has-wrg" id="wrg-${roomId}" onchange="toggleWRG(${roomId})">
+                                    <label for="wrg-${roomId}">Wärmerückgewinnung (WRG)</label>
+                                </div>
+                                <div class="form-group" id="wrg-efficiency-container-${roomId}" style="display: none; margin-top: 0.5rem;">
+                                    <label>WRG-Wirkungsgrad η<sub>rec</sub></label>
+                                    <input type="number" class="room-wrg-efficiency" step="1" min="0" max="100" value="70">
+                                    <span class="unit">%</span>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
-        function createElementTemplate(elementId) {
+        function createElementTemplate(elementId, roomId) {
             return `
                 <div class="element-card" id="element-${elementId}">
-                    <div class="form-row element-form">
+                    <div class="element-header">
+                        <h5>Bauteil #${elementId}</h5>
+                        <button type="button" class="btn btn-danger btn-sm" onclick="removeElement(${elementId})">×</button>
+                    </div>
+                    <div class="element-grid">
                         <div class="form-group">
                             <label>Bauteilname</label>
                             <input type="text" class="element-name" placeholder="z.B. Außenwand Nord">
                         </div>
                         <div class="form-group">
                             <label>Typ</label>
-                            <select class="element-type">
-                                <option value="wall">Wand</option>
-                                <option value="window">Fenster</option>
-                                <option value="floor">Boden</option>
-                                <option value="ceiling">Decke</option>
-                                <option value="roof">Dach</option>
+                            <select class="element-type" onchange="updateElementType(${elementId})">
+                                <option value="aussenwand">Außenwand</option>
+                                <option value="fenster">Fenster</option>
+                                <option value="tuer">Tür</option>
+                                <option value="dach">Dach</option>
+                                <option value="bodenplatte">Bodenplatte</option>
+                                <option value="kellerdecke">Kellerdecke</option>
+                                <option value="innenwand">Innenwand</option>
+                                <option value="decke">Decke</option>
                             </select>
                         </div>
                         <div class="form-group">
-                            <label>Fläche (m²)</label>
+                            <label>Fläche</label>
                             <input type="number" class="element-area" step="0.1" min="0" placeholder="10">
+                            <span class="unit">m²</span>
                         </div>
                         <div class="form-group">
-                            <label>U-Wert (W/m²K)</label>
+                            <label>U-Wert</label>
                             <input type="number" class="element-u-value" step="0.01" min="0" placeholder="0.24">
+                            <span class="unit">W/(m²K)</span>
                         </div>
-                        <button type="button" class="btn btn-danger btn-sm" onclick="removeElement(${elementId})">×</button>
+                        <div class="form-group">
+                            <label>Baualtersklasse (Auto-U-Wert)</label>
+                            <select class="element-age-class" onchange="updateUValueFromAge(${elementId})">
+                                <option value="">-- Manuell --</option>
+                                <option value="vor-1970">Vor 1970</option>
+                                <option value="1970-1980">1970-1980</option>
+                                <option value="1980-1995">1980-1995</option>
+                                <option value="1995-2002">1995-2002</option>
+                                <option value="2002-2016">2002-2016</option>
+                                <option value="ab-2016">Ab 2016</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Grenzt an</label>
+                            <select class="element-adjacent" onchange="updateAdjacentTemp(${elementId})">
+                                <option value="aussenluft">Außenluft</option>
+                                <option value="erdreich">Erdreich</option>
+                                <option value="unbeheizt">Unbeheizter Raum</option>
+                                <option value="beheizt">Beheizter Raum</option>
+                                <option value="angrenzend">Angrenzender Raum mit Temp.</option>
+                            </select>
+                        </div>
+                        <div class="form-group adjacent-temp-group" style="display: none;">
+                            <label>Angrenzende Temperatur</label>
+                            <input type="number" class="element-adjacent-temp" step="0.5" placeholder="z.B. 15">
+                            <span class="unit">°C</span>
+                        </div>
+                        <div class="form-group">
+                            <label>Orientierung</label>
+                            <select class="element-orientation">
+                                <option value="N">Nord (N)</option>
+                                <option value="S">Süd (S)</option>
+                                <option value="O">Ost (O)</option>
+                                <option value="W">West (W)</option>
+                                <option value="H">Horizontal (H)</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Wärmebrückenzuschlag ΔU<sub>TB</sub></label>
+                            <input type="number" class="element-thermal-bridge" step="0.01" min="0" placeholder="auto">
+                            <span class="unit">W/(m²K)</span>
+                        </div>
+                    </div>
+
+                    <!-- Fensterspezifische Optionen -->
+                    <div class="sub-options" id="window-options-${elementId}">
+                        <div class="element-grid">
+                            <div class="form-group">
+                                <label>Glas-U-Wert</label>
+                                <input type="number" class="element-glass-u" step="0.01" min="0" placeholder="1.1">
+                                <span class="unit">W/(m²K)</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Rahmen-U-Wert</label>
+                                <input type="number" class="element-frame-u" step="0.01" min="0" placeholder="1.4">
+                                <span class="unit">W/(m²K)</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Bodenplatten-Erdreich Optionen -->
+                    <div class="sub-options" id="ground-options-${elementId}">
+                        <div class="element-grid">
+                            <div class="form-group">
+                                <label>Umfang P</label>
+                                <input type="number" class="element-perimeter" step="0.1" min="0" placeholder="z.B. 40">
+                                <span class="unit">m</span>
+                            </div>
+                            <div class="form-group">
+                                <label>Tiefe z</label>
+                                <input type="number" class="element-depth" step="0.1" min="0" placeholder="z.B. 0.5">
+                                <span class="unit">m</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             `;
         }
 
-        // Functions
+        // ==================== FUNCTIONS ====================
         function addRoom() {
             roomCounter++;
             roomsContainer.insertAdjacentHTML('beforeend', createRoomTemplate(roomCounter));
+            // Initial ein Bauteil hinzufügen
+            addElement(roomCounter);
         }
 
         function removeRoom(roomId) {
@@ -175,10 +936,44 @@
             }
         }
 
+        function toggleRoom(roomId) {
+            const body = document.getElementById(`room-body-${roomId}`);
+            const btn = document.querySelector(`#room-${roomId} .toggle-btn`);
+            if (body.classList.contains('open')) {
+                body.classList.remove('open');
+                btn.textContent = '▶';
+            } else {
+                body.classList.add('open');
+                btn.textContent = '▼';
+            }
+        }
+
+        function updateRoomTemp(roomId) {
+            const room = document.getElementById(`room-${roomId}`);
+            const typeSelect = room.querySelector('.room-type');
+            const tempInput = room.querySelector('.room-temp');
+            const selectedType = typeSelect.value;
+            if (ROOM_TEMPS[selectedType]) {
+                tempInput.value = ROOM_TEMPS[selectedType];
+            }
+        }
+
+        function updateRoomVolume(roomId) {
+            const room = document.getElementById(`room-${roomId}`);
+            const area = parseFloat(room.querySelector('.room-area').value) || 0;
+            const height = parseFloat(room.querySelector('.room-height').value) || 0;
+            const volume = area * height;
+            room.querySelector('.room-volume').textContent = volume.toFixed(1) + ' m³';
+        }
+
         function addElement(roomId) {
             elementCounter++;
             const container = document.getElementById(`elements-${roomId}`);
-            container.insertAdjacentHTML('beforeend', createElementTemplate(elementCounter));
+            container.insertAdjacentHTML('beforeend', createElementTemplate(elementCounter, roomId));
+            // Thermischen Brückenzuschlag aus Gebäude-Einstellung übernehmen
+            const thermalBridge = document.getElementById('thermal-bridge').value;
+            const elementCard = document.getElementById(`element-${elementCounter}`);
+            elementCard.querySelector('.element-thermal-bridge').placeholder = thermalBridge;
         }
 
         function removeElement(elementId) {
@@ -188,6 +983,76 @@
             }
         }
 
+        function updateElementType(elementId) {
+            const element = document.getElementById(`element-${elementId}`);
+            const typeSelect = element.querySelector('.element-type');
+            const windowOptions = element.querySelector(`#window-options-${elementId}`);
+            const groundOptions = element.querySelector(`#ground-options-${elementId}`);
+            const adjacentSelect = element.querySelector('.element-adjacent');
+
+            // Reset
+            windowOptions.classList.remove('visible');
+            groundOptions.classList.remove('visible');
+
+            const selectedType = typeSelect.value;
+            if (selectedType === 'fenster') {
+                windowOptions.classList.add('visible');
+            } else if (selectedType === 'bodenplatte') {
+                // Bodenplatte standardmäßig auf Erdreich
+                adjacentSelect.value = 'erdreich';
+                groundOptions.classList.add('visible');
+            }
+        }
+
+        function updateUValueFromAge(elementId) {
+            const element = document.getElementById(`element-${elementId}`);
+            const ageSelect = element.querySelector('.element-age-class');
+            const typeSelect = element.querySelector('.element-type');
+            const uValueInput = element.querySelector('.element-u-value');
+
+            const ageClass = ageSelect.value;
+            if (!ageClass) return;
+
+            const elementType = typeSelect.value;
+            const uValues = BUILDING_AGE_U_VALUES[ageClass];
+            if (uValues && uValues[elementType]) {
+                uValueInput.value = uValues[elementType];
+            }
+        }
+
+        function updateAdjacentTemp(elementId) {
+            const element = document.getElementById(`element-${elementId}`);
+            const adjacentSelect = element.querySelector('.element-adjacent');
+            const tempGroup = element.querySelector('.adjacent-temp-group');
+
+            if (adjacentSelect.value === 'angrenzend') {
+                tempGroup.style.display = 'block';
+            } else {
+                tempGroup.style.display = 'none';
+            }
+        }
+
+        function toggleVentilation(roomId) {
+            const checkbox = document.getElementById(`ventilation-${roomId}`);
+            const options = document.getElementById(`ventilation-options-${roomId}`);
+            if (checkbox.checked) {
+                options.style.display = 'block';
+            } else {
+                options.style.display = 'none';
+            }
+        }
+
+        function toggleWRG(roomId) {
+            const checkbox = document.getElementById(`wrg-${roomId}`);
+            const container = document.getElementById(`wrg-efficiency-container-${roomId}`);
+            if (checkbox.checked) {
+                container.style.display = 'block';
+            } else {
+                container.style.display = 'none';
+            }
+        }
+
+        // ==================== DATA COLLECTION ====================
         function collectData() {
             const plz = document.getElementById('building-plz').value;
             const name = document.getElementById('building-name').value || 'Mein Gebäude';
@@ -196,78 +1061,124 @@
                 throw new Error('Bitte geben Sie eine gültige 5-stellige Postleitzahl ein.');
             }
 
-            const rooms = [];
+            const buildingData = {
+                plz: plz,
+                name: name,
+                gross_volume: parseFloat(document.getElementById('building-vol').value) || 0,
+                floor_area: parseFloat(document.getElementById('building-area').value) || 0,
+                envelope_area: parseFloat(document.getElementById('building-env-area').value) || 0,
+                thermal_bridge_class: document.getElementById('thermal-bridge').value,
+                delta_u_tb: parseFloat(document.getElementById('thermal-bridge').value),
+                air_tightness_class: document.getElementById('air-tightness').value,
+                n50: parseFloat(document.getElementById('air-tightness').value),
+                facades: parseInt(document.getElementById('facades').value),
+                shielding: document.getElementById('shielding').value,
+                heat_storage_category: document.getElementById('heat-storage').value,
+                effective_heat_capacity: parseFloat(document.getElementById('heat-capacity').value) || 10000,
+                rooms: []
+            };
+
             const roomCards = document.querySelectorAll('.room-card');
-
             roomCards.forEach(roomCard => {
-                const roomName = roomCard.querySelector('.room-name').value || `Raum ${rooms.length + 1}`;
-                const area = parseFloat(roomCard.querySelector('.room-area').value) || 0;
-                const height = parseFloat(roomCard.querySelector('.room-height').value) || 2.5;
-                const temp = parseFloat(roomCard.querySelector('.room-temp').value) || 20;
+                const roomName = roomCard.querySelector('.room-name').value || `Raum ${buildingData.rooms.length + 1}`;
+                const roomArea = parseFloat(roomCard.querySelector('.room-area').value) || 0;
+                const roomHeight = parseFloat(roomCard.querySelector('.room-height').value) || 2.5;
+                const roomTemp = parseFloat(roomCard.querySelector('.room-temp').value) || 20;
+                const roomType = roomCard.querySelector('.room-type').value;
+                const roomComfort = roomCard.querySelector('.room-comfort').checked;
 
-                if (area <= 0) {
+                if (roomArea <= 0) {
                     throw new Error(`Raum "${roomName}" hat keine gültige Fläche.`);
                 }
 
-                const elements = [];
-                const elementCards = roomCard.querySelectorAll('.element-card');
+                const roomData = {
+                    name: roomName,
+                    type: roomType,
+                    area: roomArea,
+                    height: roomHeight,
+                    volume: roomArea * roomHeight,
+                    theta_int: roomTemp,
+                    comfort_requirement: roomComfort,
+                    elements: [],
+                    ventilation: null
+                };
 
+                // Bauteile sammeln
+                const elementCards = roomCard.querySelectorAll('.element-card');
                 elementCards.forEach(elementCard => {
                     const elemName = elementCard.querySelector('.element-name').value || 'Bauteil';
                     const elemType = elementCard.querySelector('.element-type').value;
                     const elemArea = parseFloat(elementCard.querySelector('.element-area').value) || 0;
                     const elemUValue = parseFloat(elementCard.querySelector('.element-u-value').value) || 0;
+                    const elemAdjacent = elementCard.querySelector('.element-adjacent').value;
+                    const elemOrientation = elementCard.querySelector('.element-orientation').value;
+                    const elemThermalBridge = parseFloat(elementCard.querySelector('.element-thermal-bridge').value) ||
+                                               parseFloat(document.getElementById('thermal-bridge').value);
 
                     if (elemArea > 0 && elemUValue > 0) {
-                        elements.push({
+                        const elementData = {
                             name: elemName,
                             type: elemType,
                             area: elemArea,
-                            u_value: elemUValue,
-                            orientation: null,
-                            is_ground_contact: elemType === 'floor',
-                            perimeter: null
-                        });
+                            u_value: elemUValue + elemThermalBridge,
+                            u_value_base: elemUValue,
+                            delta_u_tb: elemThermalBridge,
+                            adjacent_to: elemAdjacent,
+                            orientation: elemOrientation,
+                            is_ground_contact: elemAdjacent === 'erdreich' || elemType === 'bodenplatte'
+                        };
+
+                        // Angrenzende Temperatur
+                        if (elemAdjacent === 'angrenzend') {
+                            elementData.adjacent_temp = parseFloat(elementCard.querySelector('.element-adjacent-temp').value) || 15;
+                        }
+
+                        // Fensterspezifische Werte
+                        if (elemType === 'fenster') {
+                            elementData.glass_u_value = parseFloat(elementCard.querySelector('.element-glass-u').value) || 1.1;
+                            elementData.frame_u_value = parseFloat(elementCard.querySelector('.element-frame-u').value) || 1.4;
+                        }
+
+                        // Bodenplatten-Erdreich Werte
+                        if (elemType === 'bodenplatte' && elemAdjacent === 'erdreich') {
+                            elementData.perimeter = parseFloat(elementCard.querySelector('.element-perimeter').value) || 0;
+                            elementData.depth = parseFloat(elementCard.querySelector('.element-depth').value) || 0.5;
+                        }
+
+                        roomData.elements.push(elementData);
                     }
                 });
 
-                rooms.push({
-                    name: roomName,
-                    theta_int: temp,
-                    area: area,
-                    height: height,
-                    elements: elements
-                });
+                // Lüftung sammeln
+                const hasVentilation = roomCard.querySelector('.room-has-ventilation').checked;
+                if (hasVentilation) {
+                    const hasWRG = roomCard.querySelector('.room-has-wrg').checked;
+                    roomData.ventilation = {
+                        has_system: true,
+                        supply_air: parseFloat(roomCard.querySelector('.room-supply-air').value) || 0,
+                        exhaust_air: parseFloat(roomCard.querySelector('.room-exhaust-air').value) || 0,
+                        transfer_air: parseFloat(roomCard.querySelector('.room-transfer-air').value) || 0,
+                        tech_air: parseFloat(roomCard.querySelector('.room-tech-air').value) || 0,
+                        has_wrg: hasWRG,
+                        wrg_efficiency: hasWRG ? (parseFloat(roomCard.querySelector('.room-wrg-efficiency').value) || 70) / 100 : 0
+                    };
+                }
+
+                buildingData.rooms.push(roomData);
             });
 
-            if (rooms.length === 0) {
+            if (buildingData.rooms.length === 0) {
                 throw new Error('Bitte fügen Sie mindestens einen Raum hinzu.');
             }
 
-            return {
-                plz: plz,
-                name: name,
-                rooms: rooms,
-                effective_heat_capacity: 10000
-            };
+            return buildingData;
         }
 
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            resultsSection.style.display = 'none';
-        }
-
-        function hideError() {
-            errorMessage.style.display = 'none';
-        }
-
+        // ==================== API CALL ====================
         async function calculate() {
             hideError();
-
             try {
                 const data = collectData();
-                
                 calculateBtn.disabled = true;
                 calculateBtn.textContent = 'Berechne...';
 
@@ -281,33 +1192,32 @@
 
                 const result = await response.json();
 
-                if (result.error) {
-                    throw new Error(result.error);
+                if (!result.success) {
+                    throw new Error(result.error || 'Berechnung fehlgeschlagen');
                 }
 
                 displayResults(result);
-
             } catch (error) {
                 showError(error.message);
             } finally {
                 calculateBtn.disabled = false;
-                calculateBtn.textContent = 'Berechnen';
+                calculateBtn.textContent = '🔥 Heizlast berechnen';
             }
         }
 
+        // ==================== DISPLAY RESULTS ====================
         function displayResults(result) {
-            // Climate info
-            const climateInfo = document.getElementById('climate-info');
-            climateInfo.innerHTML = `
-                <div class="climate-grid">
-                    <div><strong>PLZ:</strong> ${result.climate.plz}</div>
-                    <div><strong>θ<sub>e</sub>:</strong> ${result.climate.theta_e} °C</div>
-                    <div><strong>θ<sub>e,korr</sub>:</strong> ${result.climate.theta_e_corrected} °C</div>
-                    <div><strong>Zeitkonstante τ:</strong> ${result.building.tau} h</div>
-                </div>
-            `;
+            // Klimadaten
+            document.getElementById('result-theta-e').textContent = result.climate.theta_e.toFixed(1);
+            document.getElementById('result-theta-e-corr').textContent = result.climate.theta_e_corrected.toFixed(1);
+            document.getElementById('result-tau').textContent = result.building.tau.toFixed(1);
 
-            // Results table
+            // Gebäude-Kennwerte
+            document.getElementById('result-h-t').textContent = result.totals.h_t.toFixed(1);
+            document.getElementById('result-h-v').textContent = result.totals.h_v.toFixed(1);
+            document.getElementById('result-phi-total').textContent = result.totals.phi_total.toFixed(0);
+
+            // Raum-Ergebnisse
             const tbody = document.getElementById('results-body');
             tbody.innerHTML = '';
 
@@ -315,34 +1225,46 @@
                 const row = document.createElement('tr');
                 row.innerHTML = `
                     <td>${room.name}</td>
-                    <td>${room.area}</td>
-                    <td>${room.volume}</td>
-                    <td>${room.phi_t}</td>
-                    <td>${room.phi_v}</td>
-                    <td><strong>${room.phi_total}</strong></td>
+                    <td>${room.area.toFixed(1)}</td>
+                    <td>${room.volume.toFixed(1)}</td>
+                    <td>${room.theta_int.toFixed(1)}</td>
+                    <td>${room.phi_t.toFixed(1)}</td>
+                    <td>${room.phi_v.toFixed(1)}</td>
+                    <td><strong>${room.phi_total.toFixed(0)}</strong></td>
                 `;
                 tbody.appendChild(row);
             });
 
-            // Footer / Totals
+            // Gesamt
             const tfoot = document.getElementById('results-footer');
             tfoot.innerHTML = `
                 <tr class="totals-row">
-                    <td colspan="3"><strong>Gesamt</strong></td>
-                    <td><strong>H<sub>T</sub>: ${result.totals.h_t} W/K</strong></td>
-                    <td><strong>H<sub>V</sub>: ${result.totals.h_v} W/K</strong></td>
-                    <td><strong>${result.totals.phi_total} W</strong></td>
+                    <td colspan="4"><strong>Gesamt</strong></td>
+                    <td><strong>${result.rooms.reduce((sum, r) => sum + r.phi_t, 0).toFixed(0)} W</strong></td>
+                    <td><strong>${result.rooms.reduce((sum, r) => sum + r.phi_v, 0).toFixed(0)} W</strong></td>
+                    <td><strong>${result.totals.phi_total.toFixed(0)} W</strong></td>
                 </tr>
             `;
 
-            resultsSection.style.display = 'block';
+            resultsSection.classList.add('active');
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
         }
 
-        // Event Listeners
+        function showError(message) {
+            errorMessage.textContent = '❌ ' + message;
+            errorMessage.style.display = 'block';
+            resultsSection.classList.remove('active');
+        }
+
+        function hideError() {
+            errorMessage.style.display = 'none';
+        }
+
+        // ==================== EVENT LISTENERS ====================
         addRoomBtn.addEventListener('click', addRoom);
         calculateBtn.addEventListener('click', calculate);
 
-        // Add initial room
+        // Initial einen Raum hinzufügen
         addRoom();
     </script>
 </body>
