@@ -491,6 +491,17 @@ async def get_room_types():
     }
 
 
-if __name__ == "__main__":
+def run_server():
+    """Startet den Webserver für die Web-GUI."""
     import uvicorn
-    uvicorn.run(app, host="0.0.0.0", port=8000)
+    import os
+    port = int(os.environ.get("PORT", 8000))
+    uvicorn.run(
+        "heizlast.web.app:app",
+        host="0.0.0.0",
+        port=port,
+        reload=True
+    )
+
+if __name__ == "__main__":
+    run_server()
